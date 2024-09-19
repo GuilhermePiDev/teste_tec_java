@@ -1,0 +1,41 @@
+package target;
+
+import java.io.FileReader;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
+public class Exercicio3 {
+    public static void main(String[] args) {
+        JSONObject obj = new JSONObject(json);
+        JSONArray faturamentoArray = obj.getJSONArray("faturamento");
+
+        double menor = Double.MAX_VALUE;
+        double maior = Double.MIN_VALUE;
+        double total = 0;
+        int diasComFaturamento = 0;
+
+        for (int i = 0; i < faturamentoArray.length(); i++) {
+            double valor = faturamentoArray.getDouble(i);
+            if (valor > 0) {
+                total += valor;
+                diasComFaturamento++;
+                if (valor < menor) menor = valor;
+                if (valor > maior) maior = valor;
+            }
+        }
+
+        double media = total / diasComFaturamento;
+
+        int diasAcimaDaMedia = 0;
+        for (int i = 0; i < faturamentoArray.length(); i++) {
+            if (faturamentoArray.getDouble(i) > media) diasAcimaDaMedia++;
+        }
+
+        // Resultados
+        System.out.println("Menor faturamento: " + menor);
+        System.out.println("Maior faturamento: " + maior);
+        System.out.println("Dias acima da média: " + diasAcimaDaMedia);
+    }
+}

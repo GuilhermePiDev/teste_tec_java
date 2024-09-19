@@ -1,0 +1,63 @@
+package target;
+
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
+public class Exercicio3 {
+    public static void main(String[] args) {
+    	try {
+            // Caminho do arquivo JSON
+            String caminhoArquivo = "src/main/resources/faturamento.json";
+            String jsonConteudo = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
+
+            // Parse do JSON lido
+            JSONObject obj = new JSONObject(jsonConteudo);
+            JSONArray faturamentoArray = obj.getJSONArray("faturamento");
+
+            // Lista para armazenar valores válidos (dias com faturamento > 0)
+            List<Double> valoresValidos = new ArrayList<>();
+
+            // Preencher a lista apenas com valores de faturamento > 0
+            for (int i = 0; i < faturamentoArray.length(); i++) {
+                JSONObject dia = faturamentoArray.getJSONObject(i);
+                double valor = dia.getDouble("valor");
+                if (valor > 0) {
+                    valoresValidos.add(valor);
+                }
+            }
+
+            // Verifica se há valores válidos para continuar
+            if (valoresValidos.isEmpty()) {
+                System.out.println("Não há valores válidos de faturamento.");
+                return;
+            }
+
+            // Menor e maior valor de faturamento
+            double menorFaturamento = valoresValidos.stream().min(Double::compare).get();
+            double maiorFaturamento = valoresValidos.stream().max(Double::compare).get();
+
+            // Cálculo da média
+            double somaTotal = valoresValidos.stream().mapToDouble(Double::doubleValue).sum();
+            double mediaFaturamento = somaTotal / valoresValidos.size();
+
+            // Contagem de dias com faturamento superior à média
+            long diasAcimaDaMedia = valoresValidos.stream().filter(valor -> valor > mediaFaturamento).count();
+
+            // Exibir resultados
+            System.out.println("Menor valor de faturamento: " + menorFaturamento);
+            System.out.println("Maior valor de faturamento: " + maiorFaturamento);
+            System.out.println("Dias com faturamento acima da média: " + diasAcimaDaMedia);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
